@@ -16,7 +16,8 @@ RUN sed -i -e 's/stretch main/stretch main contrib/' /etc/apt/sources.list && ap
       fonts-arphic-ukai \
       fonts-arphic-uming \
       fonts-nanum \
-      poppler-utils
+      poppler-utils \
+      psmisc
 
 # Detour: install NodeJS. (We need Debian Stretch for its browser versions. As
 # of 2018-04-17, node:9.11.1-slim is built on Jessie and has old browsers.)
