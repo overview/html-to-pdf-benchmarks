@@ -1,0 +1,59 @@
+#!/bin/bash
+
+set -e
+DIR="$(dirname "$0")"
+
+convert_n_times() {
+  CONVERT_DIR="$1"
+  FILENAME="$2"
+  TIMES="$3"
+  for i in {1..$TIMES}; do
+    cd "$CONVERT_DIR" && ./convert "$FILENAME" || exit 1
+  done
+}
+
+benchmark_convert() {
+  CONVERT_DIR="$1"
+  FILENAME="$2"
+  TIMES="$3"
+
+  time1=$(($(date +%s%N)/1000000))
+  convert_n_times "$CONVERT_DIR" "$FILENAME" "$TIMES"
+  time2=$(($(date +%s%N)/1000000))
+  ms=$((time2 - time1))
+
+  average=$((ms / TIMES))
+  echo >&2 "${FILENAME}: ${ms}ms for ${TIMES} conversions (avg ${average}ms)"
+
+  echo $ms
+}
+
+benchmark_strategy() {
+  STRATEGY="$1"
+
+  dir="$DIR"/"$STRATEGY"
+
+  if [ -x "$dir"/setup ]; then
+    (cd "$dir" && ./setup)
+  fi
+
+  ms_small=$(benchmark_convert "$dir" small.html 30)
+  ms_medium=$(benchmark_convert "$dir" medium.html 15)
+  ms_large=$(benchmark_convert "$dir" large.html 2)
+
+  if [ -x "$dir"/teardown ]; then
+    (cd "$dir" && ./teardown)
+  fi
+
+  total=$((ms_small + ms_medium + ms_large))
+
+  echo "$STRATEGY: finished in ${total}ms"
+}
+
+if [ -z "$1" ]; then
+  for strategy in $(echo using-*); do
+    benchmark_strategy $strategy
+  done
+else
+  benchmark_strategy $1
+fi

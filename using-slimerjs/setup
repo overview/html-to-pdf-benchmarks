@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -e
+
+# To save ~20ms -- which can be 25% for small files -- we invoke Firefox to
+# create a profile directory just once. Then we copy it each time, instead of
+# making Firefox regenerate it.
+rm -rf /tmp/slimerjs-profile-template
+mkdir /tmp/slimerjs-profile-template
+exec slimerjs \
+  --profile /tmp/slimerjs-profile-template \
+  --headless \
+  "$(dirname "$0")"/noop.js

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+chromium \
+  --headless \
+  --disable-gpu \
+  --window-size=1024,768 \
+  --no-sandbox \
+  --disable-background-networking \
+  --disable-default-apps \
+  --disable-extensions \
+  --disable-sync \
+  --no-default-browser-check \
+  --no-first-run \
+  --no-startup-window \
+  --remote-debugging-port=9222 \
+  &
+sleep 3 # wait for it to start up

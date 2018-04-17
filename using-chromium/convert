@@ -1,0 +1,36 @@
+#!/usr/bin/env node
+
+const CRI = require('chrome-remote-interface')
+const fs = require('fs')
+const htmlToText = require('html-to-text')
+const path = require('path')
+
+async function main() {
+  const cri = await CRI()
+
+  const { Page, DOM, Network, Emulation } = cri
+  await Promise.all([ Page.enable(), DOM.enable(), Network.enable() ])
+  await Emulation.setScriptExecutionDisabled({ value: true })
+  await Network.emulateNetworkConditions({ offline: true, latency: 0, uploadThroughput: 0, downloadThroughput: 0 })
+
+  Page.navigate({ url: 'file://' + path.normalize(__dirname) + '/page.html' })
+  await Page.loadEventFired()
+
+  const jpgBase64 = await Page.captureScreenshot({ format: 'jpeg', quality: 85 })
+  fs.writeFileSync('screenshot.jpg', Buffer.from(jpgBase64.data, 'base64'))
+
+  const pdfBase64 = await Page.printToPDF()
+  fs.writeFileSync('doc.pdf', Buffer.from(pdfBase64.data, 'base64'))
+
+  // Output valid HTML, even if input is invalid
+  const doc = await DOM.getDocument()
+  const html = await DOM.getOuterHTML({ nodeId: doc.root.nodeId })
+  const text = htmlToText.fromString(html.outerHTML, { wordwrap: false, uppercaseHeadings: false })
+  fs.writeFileSync('doc.txt', text)
+
+  await cri.close()
+}
+
+fs.copyFileSync('../' + process.argv[2], 'page.html')
+
+main(process.argv[2])

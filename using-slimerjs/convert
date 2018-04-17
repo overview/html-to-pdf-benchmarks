@@ -1,0 +1,32 @@
+#!/bin/bash
+
+set -e
+
+DIR="$(dirname "$0")"
+FILENAME="$1"
+
+pushd "$DIR" >/dev/null
+
+# Reset profile directory by copying files, instead of by making Firefox
+# generate profile from scratch
+rm -rf /tmp/slimerjs-profile
+cp -a /tmp/slimerjs-profile-template /tmp/slimerjs-profile
+
+cp ../"$FILENAME" ./page.html
+
+slimerjs \
+  --headless \
+  --profile /tmp/slimerjs-profile \
+  script.js
+
+# SlimerJS can render screenshots, but they're screenshots of the _page_, not of
+# the PDF. We want both screenshots to look the same. So we'll generate a
+# screenshot of the PDF.
+pdftocairo \
+    -jpeg \
+    -singlefile \
+    -scale-to 700 \
+    doc.pdf \
+    thumbnail.jpg
+
+popd >/dev/null
