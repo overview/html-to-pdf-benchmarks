@@ -30,8 +30,7 @@ Create `STRATEGY/setup`, `STRATEGY/teardown` and `STRATEGY/convert`, where
 
 Run the benchmarks on your computer:
 
-`docker build .`
-`docker run -it --rm $(docker build --quiet .)`
+`docker build . && docker run -it --rm $(docker build --quiet .)`
 
 # Results
 
