@@ -63,16 +63,16 @@ RUN ARCH= && dpkgArch="$(dpkg --print-architecture)" \
 # </detour>
 
 # Install Firefox. (Debian provides firefox-esr, which is too old for SlimerJS.)
-RUN curl -o - --location https://download-installer.cdn.mozilla.net/pub/firefox/releases/59.0.2/linux-x86_64/en-US/firefox-59.0.2.tar.bz2 \
+RUN curl -o - --location https://download-installer.cdn.mozilla.net/pub/firefox/releases/60.0.1/linux-x86_64/en-US/firefox-60.0.1.tar.bz2 \
         | tar -xj -C / \
    && mkdir -p /opt \
    && mv /firefox /opt/
 
 # Install SlimerJS
-RUN curl -o - --location https://download.slimerjs.org/releases/1.0.0/slimerjs-1.0.0.tar.bz2 \
+RUN curl -o - --location https://github.com/adamhooper/slimerjs/releases/download/stripped-to-the-minimum.001/slimerjs-1.1.0-pre.tar.bz2 \
         | tar -xj -C / \
     && mkdir -p /opt \
-    && mv /slimerjs-1.0.0 /opt/slimerjs
+    && mv /slimerjs-1.* /opt/slimerjs
 
 ENV PATH /opt/firefox:/opt/slimerjs:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 

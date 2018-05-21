@@ -71,6 +71,10 @@ using-slimerjs: finished in 95515ms
 
 Peak RAM usage (seen via `systemd-cgtop`): **0.9GB**
 
+Notes: with a custom SlimerJS branch and Firefox v60, the benchmark now takes
+the same amount of time and runs on ~1.3 CPUs. The timings are roughly the same
+as the above, which were tested with stock SlimerJS and Firefox v59.
+
 ## Conclusion
 
 Chromium is much faster for a typical HTML file. But Firefox gracefully scales

@@ -1,6 +1,5 @@
 const fs = require('fs')
 const webpage = require('webpage')
-const system = require('system')
 
 const page = webpage.create()
 page.settings.javascriptEnabled = false
